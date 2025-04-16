@@ -41,6 +41,8 @@ public sealed class ImportOrchardCoreRecipeTool : AIFunction
 
     protected override ValueTask<object?> InvokeCoreAsync(AIFunctionArguments arguments, CancellationToken cancellationToken)
     {
+        Console.WriteLine($"The {Name} function was invoked.");
+
         ArgumentNullException.ThrowIfNull(arguments);
 
         if (!arguments.TryGetValue("recipe", out var data))
@@ -54,8 +56,6 @@ public sealed class ImportOrchardCoreRecipeTool : AIFunction
         {
             return ValueTask.FromResult<object?>(false);
         }
-
-        Console.WriteLine($"The {Name} function was invoked.");
 
         return ValueTask.FromResult<object?>(true);
     }
