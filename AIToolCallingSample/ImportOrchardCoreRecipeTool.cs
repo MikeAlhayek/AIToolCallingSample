@@ -14,29 +14,20 @@ public sealed class ImportOrchardCoreRecipeTool : AIFunction
 
     public ImportOrchardCoreRecipeTool()
     {
-        var metadata = new JsonObject
-        {
-            {"type", "object"},
-            {"properties", new JsonObject
-                {
-                    { "recipe", new JsonObject
-                        {
-                            {"type", "object" },
-                            {"description", "A JSON object representing an OrchardCore recipe" },
-                        }
+        JsonSchema = JsonSerializer.Deserialize<JsonElement>(
+            """
+            {
+                "type": "object",
+                "properties": {
+                    "recipe": {
+                        "type": "string",
+                        "description": "A JSON object representing an OrchardCore recipe"
                     }
-                }
-            },
-            {"required", new JsonArray("recipe") },
-            {"return_type", new JsonObject
-                {
-                    {"type", "boolean"},
-                    {"description", "The result of the import process. True representing a successful import while false failed."},
-                }
-            },
-        };
-
-        JsonSchema = JsonSerializer.Deserialize<JsonElement>(metadata, JsonSerializerOptions);
+                },
+                "additionalProperties": false,
+                "required": ["recipe"]
+            }
+            """, JsonSerializerOptions);
     }
 
     protected override ValueTask<object?> InvokeCoreAsync(AIFunctionArguments arguments, CancellationToken cancellationToken)
@@ -47,17 +38,17 @@ public sealed class ImportOrchardCoreRecipeTool : AIFunction
 
         if (!arguments.TryGetValue("recipe", out var data))
         {
-            return ValueTask.FromResult<object?>(false);
+            return ValueTask.FromResult<object?>("No recipe was given.");
         }
 
         var recipe = ConvertToJsonObject(data!);
 
         if (recipe == null)
         {
-            return ValueTask.FromResult<object?>(false);
+            return ValueTask.FromResult<object?>("Unable to import recipe.");
         }
 
-        return ValueTask.FromResult<object?>(true);
+        return ValueTask.FromResult<object?>("Recipe was imported successfully.");
     }
 
     private static JsonObject? ConvertToJsonObject(object data)

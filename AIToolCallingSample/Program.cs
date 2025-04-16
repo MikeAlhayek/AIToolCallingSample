@@ -35,5 +35,6 @@ while (true)
         response += item.Text;
     }
     chatHistory.Add(new ChatMessage(ChatRole.Assistant, response));
+
     Console.WriteLine();
 }
