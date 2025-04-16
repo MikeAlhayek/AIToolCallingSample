@@ -36,7 +36,7 @@ public sealed class ImportOrchardCoreRecipeTool : AIFunction
             },
         };
 
-        JsonSchema = JsonSerializer.Deserialize<JsonElement>(metadata);
+        JsonSchema = JsonSerializer.Deserialize<JsonElement>(metadata, JsonSerializerOptions);
     }
 
     protected override ValueTask<object?> InvokeCoreAsync(AIFunctionArguments arguments, CancellationToken cancellationToken)
