@@ -10,9 +10,12 @@ var model = config["ModelName"] ?? throw new InvalidOperationException("ModelNam
 var key = config["OpenAIKey"] ?? throw new InvalidOperationException("OpenAIKey is not defined in the secrets");
 var endpoint = config["Endpoint"] ?? throw new InvalidOperationException("Endpoint is not defined in the secrets");
 
-var chatClient = new AzureOpenAIClient(new Uri(endpoint), new ApiKeyCredential(key))
+var client = new AzureOpenAIClient(new Uri(endpoint), new ApiKeyCredential(key))
     .GetChatClient(model)
     .AsIChatClient();
+
+var builder = new ChatClientBuilder(client)
+    .UseFunctionInvocation();
 
 var chatHistory = new List<ChatMessage>();
 
@@ -20,6 +23,8 @@ var options = new ChatOptions
 {
     Tools = [new ImportOrchardCoreRecipeTool()],
 };
+
+var chatClient = builder.Build();
 
 while (true)
 {
