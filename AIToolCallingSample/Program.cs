@@ -6,13 +6,12 @@ using System.ClientModel;
 
 var config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
 
-string? model = config["ModelName"] ?? throw new InvalidOperationException("ModelName is not defined in the secrets");
-string key = config["OpenAIKey"] ?? throw new InvalidOperationException("OpenAIKey is not defined in the secrets");
-string endpoint = config["Endpoint"] ?? throw new InvalidOperationException("Endpoint is not defined in the secrets");
+var model = config["ModelName"] ?? throw new InvalidOperationException("ModelName is not defined in the secrets");
+var key = config["OpenAIKey"] ?? throw new InvalidOperationException("OpenAIKey is not defined in the secrets");
+var endpoint = config["Endpoint"] ?? throw new InvalidOperationException("Endpoint is not defined in the secrets");
 
-// Create the IChatClient
-IChatClient chatClient = new AzureOpenAIClient(new Uri(endpoint), new ApiKeyCredential(key))
-    .GetChatClient(model ?? "gpt-4o")
+var chatClient = new AzureOpenAIClient(new Uri(endpoint), new ApiKeyCredential(key))
+    .GetChatClient(model)
     .AsIChatClient();
 
 var chatHistory = new List<ChatMessage>();
